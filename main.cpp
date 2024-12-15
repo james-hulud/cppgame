@@ -3,59 +3,42 @@
 
 using namespace std;
 
-void handlePlayerInput(SDL_Event e, SDL_Rect *playerPtr)
+void handlePlayerMovement(SDL_FRect *playerPtr, float deltaTime)
 {
 
-    int speed = 10;
+    float velocity = 100.0;
     bool up = false;
     bool down = false;
     bool left = false;
     bool right = false;
+    // keyState works with continous presses
+    const Uint8 *keyState = SDL_GetKeyboardState(NULL);
 
-    // keyStates works with continous presses
-    const Uint8 *keyStates = SDL_GetKeyboardState(NULL);
+    // Array of input keys. up, w, down, a, left, s, right, d
+    SDL_Scancode movementKeys[] = {SDL_SCANCODE_UP, SDL_SCANCODE_W, SDL_SCANCODE_LEFT, SDL_SCANCODE_A, SDL_SCANCODE_DOWN, SDL_SCANCODE_S, SDL_SCANCODE_RIGHT, SDL_SCANCODE_D};
 
-    // Refactor this, does not work right when keys come up / down after pressing / holding
-    // Moving up or down
-    if (keyStates[SDL_SCANCODE_UP] ||
-        keyStates[SDL_SCANCODE_W] ||
-        keyStates[SDL_SCANCODE_DOWN] ||
-        keyStates[SDL_SCANCODE_S])
+    // Check if keys are pressed
+    bool isMoving = false;
+    for (int i = 0; i < sizeof(movementKeys) / sizeof(movementKeys[0]); i++)
     {
-        playerPtr->y += keyStates[SDL_SCANCODE_UP] ||
-                                keyStates[SDL_SCANCODE_W]
-                            ? -speed
-                            : speed;
-
-        // and left
-        if (keyStates[SDL_SCANCODE_LEFT] ||
-            keyStates[SDL_SCANCODE_A])
-            playerPtr->x -= speed;
-        // and right
-        else if (keyStates[SDL_SCANCODE_RIGHT] ||
-                 keyStates[SDL_SCANCODE_D])
-            playerPtr->x += speed;
+        if (keyState[movementKeys[i]])
+        {
+            isMoving = true;
+            break;
+        }
     }
-    // Moving left or right
-    else if (keyStates[SDL_SCANCODE_LEFT] ||
-             keyStates[SDL_SCANCODE_A] ||
-             keyStates[SDL_SCANCODE_RIGHT] ||
-             keyStates[SDL_SCANCODE_D])
-    {
-        playerPtr->x += keyStates[SDL_SCANCODE_LEFT] ||
-                                keyStates[SDL_SCANCODE_A]
-                            ? -speed
-                            : speed;
 
-        // and up
-        if (keyStates[SDL_SCANCODE_UP] ||
-            keyStates[SDL_SCANCODE_W])
-            playerPtr->y -= speed;
-        // and down
-        else if (keyStates[SDL_SCANCODE_DOWN] ||
-                 keyStates[SDL_SCANCODE_S])
-            playerPtr->y += speed;
-    }
+    if (keyState[SDL_SCANCODE_UP] || keyState[SDL_SCANCODE_W])
+        playerPtr->y -= velocity * deltaTime;
+
+    if (keyState[SDL_SCANCODE_LEFT] || keyState[SDL_SCANCODE_A])
+        playerPtr->x -= velocity * deltaTime;
+
+    if (keyState[SDL_SCANCODE_DOWN] || keyState[SDL_SCANCODE_S])
+        playerPtr->y += velocity * deltaTime;
+
+    if (keyState[SDL_SCANCODE_RIGHT] || keyState[SDL_SCANCODE_D])
+        playerPtr->x += velocity * deltaTime;
 }
 
 void gameLoop(SDL_Window *window)
@@ -78,32 +61,48 @@ void gameLoop(SDL_Window *window)
     cout << windowWidth << " " << windowHeight << endl;
 
     // the 50 is halfway across the rect and halfway down
-    SDL_Rect playerRect = {windowWidth / 2 - 50, windowHeight / 2 - 50, 100, 100};
-    SDL_Rect *playerPtr = &playerRect;
+    SDL_FRect playerRect = {windowWidth / 2.0 - 50.0, windowHeight / 2.0 - 50.0, 100.0, 100.0};
+    SDL_FRect *playerPtr = &playerRect;
+
+    bool isMoving = false;
+    Uint32 lastTime = SDL_GetTicks();
+    float deltaTime = 0.0f;
+    const Uint8 *keyState = SDL_GetKeyboardState(NULL);
 
     while (!quit)
     {
+        Uint32 currentTime = SDL_GetTicks();
+        // cout << "currentTime:" << currentTime << endl;
+
+        deltaTime = (currentTime - lastTime) / 1000.0f; // Bases deltaTime on the time the game has been running instead of the frame rate / loop iterations
+        lastTime = currentTime;
+
         while (SDL_PollEvent(&e) != 0)
         {
+
             switch (e.type)
             {
             case SDL_QUIT:
                 quit = true;
+                break;
             case SDL_KEYDOWN:
-                handlePlayerInput(e, playerPtr);
+                isMoving = true;
+                break;
+            case SDL_KEYUP:
+                isMoving = false;
+                break;
             }
-
-            // White
-            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-
-            SDL_RenderClear(renderer);
-
-            SDL_RenderCopy(renderer, texture, NULL, &playerRect);
-
-            SDL_RenderPresent(renderer);
         }
+
+        handlePlayerMovement(playerPtr, deltaTime);
+        SDL_RenderClear(renderer);
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // White
+        SDL_RenderCopyF(renderer, texture, NULL, &playerRect);
+        SDL_RenderPresent(renderer);
     }
 
+    free(playerPtr);
+    SDL_DestroyTexture(texture);
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
 }
