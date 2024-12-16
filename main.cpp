@@ -64,7 +64,6 @@ void gameLoop(SDL_Window *window)
     SDL_FRect playerRect = {windowWidth / 2.0 - 50.0, windowHeight / 2.0 - 50.0, 100.0, 100.0};
     SDL_FRect *playerPtr = &playerRect;
 
-    bool isMoving = false;
     Uint32 lastTime = SDL_GetTicks();
     float deltaTime = 0.0f;
     const Uint8 *keyState = SDL_GetKeyboardState(NULL);
@@ -84,12 +83,6 @@ void gameLoop(SDL_Window *window)
             {
             case SDL_QUIT:
                 quit = true;
-                break;
-            case SDL_KEYDOWN:
-                isMoving = true;
-                break;
-            case SDL_KEYUP:
-                isMoving = false;
                 break;
             }
         }
