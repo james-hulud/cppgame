@@ -4,6 +4,7 @@
         "*.css": "tailwindcss",
         "*.jinja": "jinja-html",
         "ostream": "cpp",
-        "__locale": "cpp"
+        "__locale": "cpp",
+        "iostream": "cpp"
     }
 }
