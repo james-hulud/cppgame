@@ -8,6 +8,5 @@ public:
     ~NPC();
     SDL_FRect npc_rect;
     SDL_Surface *sprite_image;
-    void trackPlayer(float delta_time);
-    void attack();
+    void track_player(float delta_time);
 };
