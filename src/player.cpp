@@ -49,7 +49,6 @@ Player::~Player()
 
 void Player::move(float delta_time)
 {
-
     float velocity = 100.0;
     const Uint8 *keyState = SDL_GetKeyboardState(NULL);
 
