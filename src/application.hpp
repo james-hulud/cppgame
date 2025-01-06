@@ -19,4 +19,6 @@ private:
     SDL_Event event;
     void handle_user_input(float delta_time);
     void draw();
+
+    SDL_Texture *npc_sprite;
 };
