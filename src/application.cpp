@@ -31,16 +31,27 @@ Application::Application()
         return;
     }
 
-    SDL_Event event;
+    // Init sprite here with renderer
+    player.sprite = SDL_CreateTextureFromSurface(renderer, player.sprite_image);
 
-    // player = Player(renderer);
-    player_sprite = SDL_CreateTextureFromSurface(renderer, player.sprite_image);
+    // Init NPC
+    for (int i = 0; i < 5; i++)
+    {
+        NPC enemy = NPC();
+        enemy.sprite = SDL_CreateTextureFromSurface(renderer, enemy.sprite_image);
+        mobs.emplace_back(enemy);
+    }
 }
 
 Application::~Application()
 {
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
+    SDL_DestroyTexture(player.sprite);
+    for (NPC &mob : mobs)
+    {
+        SDL_DestroyTexture(mob.sprite);
+    }
 }
 
 void Application::loop()
@@ -49,7 +60,6 @@ void Application::loop()
 
     bool quit = false;
     float delta_time = 0.0f;
-    const Uint8 *key_state = SDL_GetKeyboardState(NULL);
 
     while (!quit)
     {
@@ -70,6 +80,8 @@ void Application::loop()
         }
 
         handle_user_input(delta_time);
+        for (NPC &mob : mobs)
+            mob.track_player(player.player_rect);
         draw();
     }
 }
@@ -83,23 +95,26 @@ void Application::handle_user_input(float delta_time)
     SDL_Scancode movement_keys[] = {SDL_SCANCODE_UP, SDL_SCANCODE_W, SDL_SCANCODE_LEFT, SDL_SCANCODE_A, SDL_SCANCODE_DOWN, SDL_SCANCODE_S, SDL_SCANCODE_RIGHT, SDL_SCANCODE_D};
 
     // Check if keys are pressed
-    bool is_moving = false;
-    for (int i = 0; i < sizeof(movement_keys) / sizeof(movement_keys[0]); i++)
+    for (std::size_t i = 0; i < sizeof(movement_keys) / sizeof(movement_keys[0]); i++)
     {
         if (key_state[movement_keys[i]])
         {
-            is_moving = true;
+            player.move(delta_time);
             break;
         }
     }
-
-    player.move(delta_time);
 }
 
 void Application::draw()
 {
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    SDL_RenderCopyF(renderer, player_sprite, NULL, &player.player_rect);
+    // Render player
+    SDL_RenderCopyF(renderer, player.sprite, NULL, &player.player_rect);
+
+    // Render enemies
+    for (NPC &mob : mobs)
+        SDL_RenderCopyF(renderer, mob.sprite, NULL, &mob.npc_rect);
+
     SDL_RenderPresent(renderer);
 }

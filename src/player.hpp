@@ -9,6 +9,7 @@ public:
     ~Player();
     SDL_FRect player_rect;
     SDL_Surface *sprite_image;
+    SDL_Texture *sprite;
     void move(float delta_time);
 
 private:

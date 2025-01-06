@@ -1,5 +1,7 @@
 #include <SDL2/SDL.h>
 #include "player.hpp"
+#include "npc.hpp"
+#include <list>
 #pragma once
 
 class Application
@@ -14,11 +16,9 @@ public:
 
 private:
     Player player;
-    SDL_Texture *player_sprite;
     SDL_Window *window;
     SDL_Event event;
     void handle_user_input(float delta_time);
     void draw();
-
-    SDL_Texture *npc_sprite;
+    std::list<NPC> mobs;
 };

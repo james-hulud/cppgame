@@ -20,7 +20,6 @@ Player::Player()
 Player::~Player()
 {
     SDL_FreeSurface(sprite_image);
-    // SDL_DestroyTexture(player_sprite);
 }
 
 void Player::move(float delta_time)
