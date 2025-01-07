@@ -7,8 +7,12 @@ class NPC
 public:
     NPC();
     ~NPC();
-    SDL_FRect npc_rect;
-    SDL_Surface *sprite_image;
+    SDL_FRect npcRect;
+    SDL_Surface *spriteImage;
     SDL_Texture *sprite;
-    void track_player(const SDL_FRect &player_rect);
+    void trackPlayer(const SDL_FRect *playerRect);
+    void damagePlayer(const SDL_FRect *playerRect);
+
+private:
+    bool isColliding(const SDL_FRect *playerRect);
 };

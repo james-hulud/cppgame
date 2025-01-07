@@ -20,7 +20,7 @@ Application::Application()
     }
 
     // Set the window width and height
-    SDL_GetWindowSize(window, &window_width, &window_height);
+    SDL_GetWindowSize(window, &windowWidth, &windowHeight);
 
     // Init renderer
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
@@ -32,13 +32,13 @@ Application::Application()
     }
 
     // Init sprite here with renderer
-    player.sprite = SDL_CreateTextureFromSurface(renderer, player.sprite_image);
+    player.setSprite(SDL_CreateTextureFromSurface(renderer, player.getSpriteImage()));
 
     // Init NPC
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 1; i++)
     {
         NPC enemy = NPC();
-        enemy.sprite = SDL_CreateTextureFromSurface(renderer, enemy.sprite_image);
+        enemy.sprite = SDL_CreateTextureFromSurface(renderer, enemy.spriteImage);
         mobs.emplace_back(enemy);
     }
 }
@@ -47,7 +47,7 @@ Application::~Application()
 {
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
-    SDL_DestroyTexture(player.sprite);
+    SDL_DestroyTexture(player.getSprite());
     for (NPC &mob : mobs)
     {
         SDL_DestroyTexture(mob.sprite);
@@ -56,17 +56,17 @@ Application::~Application()
 
 void Application::loop()
 {
-    Uint32 last_time = SDL_GetTicks();
+    Uint32 lastTime = SDL_GetTicks();
 
     bool quit = false;
-    float delta_time = 0.0f;
+    float deltaTime = 0.0f;
 
     while (!quit)
     {
-        Uint32 current_time = SDL_GetTicks();
+        Uint32 currentTime = SDL_GetTicks();
 
-        delta_time = (current_time - last_time) / 1000.0f; // Bases deltaTime on the time the game has been running instead of the frame rate / loop iterations
-        last_time = current_time;
+        deltaTime = (currentTime - lastTime) / 1000.0f; // Bases deltaTime on the time the game has been running instead of the frame rate / loop iterations
+        lastTime = currentTime;
 
         while (SDL_PollEvent(&event) != 0)
         {
@@ -79,27 +79,31 @@ void Application::loop()
             }
         }
 
-        handle_user_input(delta_time);
+        handleUserInput(deltaTime);
         for (NPC &mob : mobs)
-            mob.track_player(player.player_rect);
+        {
+            mob.trackPlayer(player.getPlayerRect());
+            mob.damagePlayer(player.getPlayerRect());
+        }
+
         draw();
     }
 }
 
-void Application::handle_user_input(float delta_time)
+void Application::handleUserInput(float deltaTime)
 {
     // keyState works with continous presses
-    const Uint8 *key_state = SDL_GetKeyboardState(NULL);
+    const Uint8 *keyState = SDL_GetKeyboardState(NULL);
 
     // Array of input keys. up, w, down, a, left, s, right, d
-    SDL_Scancode movement_keys[] = {SDL_SCANCODE_UP, SDL_SCANCODE_W, SDL_SCANCODE_LEFT, SDL_SCANCODE_A, SDL_SCANCODE_DOWN, SDL_SCANCODE_S, SDL_SCANCODE_RIGHT, SDL_SCANCODE_D};
+    SDL_Scancode movementKeys[] = {SDL_SCANCODE_UP, SDL_SCANCODE_W, SDL_SCANCODE_LEFT, SDL_SCANCODE_A, SDL_SCANCODE_DOWN, SDL_SCANCODE_S, SDL_SCANCODE_RIGHT, SDL_SCANCODE_D};
 
     // Check if keys are pressed
-    for (std::size_t i = 0; i < sizeof(movement_keys) / sizeof(movement_keys[0]); i++)
+    for (std::size_t i = 0; i < sizeof(movementKeys) / sizeof(movementKeys[0]); i++)
     {
-        if (key_state[movement_keys[i]])
+        if (keyState[movementKeys[i]])
         {
-            player.move(delta_time);
+            player.move(deltaTime);
             break;
         }
     }
@@ -110,11 +114,11 @@ void Application::draw()
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     // Render player
-    SDL_RenderCopyF(renderer, player.sprite, NULL, &player.player_rect);
+    SDL_RenderCopyF(renderer, player.getSprite(), NULL, player.getPlayerRect());
 
     // Render enemies
     for (NPC &mob : mobs)
-        SDL_RenderCopyF(renderer, mob.sprite, NULL, &mob.npc_rect);
+        SDL_RenderCopyF(renderer, mob.sprite, NULL, &mob.npcRect);
 
     SDL_RenderPresent(renderer);
 }
