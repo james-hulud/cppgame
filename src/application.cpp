@@ -35,9 +35,10 @@ Application::Application()
     player.setSprite(SDL_CreateTextureFromSurface(renderer, player.getSpriteImage()));
 
     // Init NPC
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < 10; i++)
     {
         NPC enemy = NPC();
+        enemy.setPlayer(&player);
         enemy.sprite = SDL_CreateTextureFromSurface(renderer, enemy.spriteImage);
         mobs.emplace_back(enemy);
     }
@@ -80,11 +81,21 @@ void Application::loop()
         }
 
         handleUserInput(deltaTime);
-        for (NPC &mob : mobs)
+        std::list<NPC>::iterator i = mobs.begin();
+        bool isColliding = false;
+        while (i != mobs.end())
         {
-            mob.trackPlayer(player.getPlayerRect());
-            mob.damagePlayer(player.getPlayerRect());
+            // Track the player
+            i->trackPlayer();
+            // if (i->damagePlayer())
+            // {
+            //     isColliding = true;
+            // }
+            i++;
         }
+
+        if (isColliding)
+            mobs.pop_back();
 
         draw();
     }

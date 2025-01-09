@@ -23,40 +23,40 @@ NPC::NPC()
 NPC::~NPC()
 {
     SDL_FreeSurface(spriteImage);
+    // SDL_DestroyTexture(sprite);
 }
 
-void NPC::trackPlayer(const SDL_FRect *playerRect)
+void NPC::trackPlayer()
 {
     // Direction vector
-    float dx = playerRect->x - npcRect.x;
-    float dy = playerRect->y - npcRect.y;
+    float dx = player->getPlayerRect()->x - npcRect.x;
+    float dy = player->getPlayerRect()->y - npcRect.y;
 
     float length = std::sqrt(dx * dx + dy * dy);
     if (length > 0.0f)
     {
-        // float speed = 0.01f;
-        float speed = 0.05f;
+        float speed = 0.01f;
         npcRect.x += (dx / length) * speed;
         npcRect.y += (dy / length) * speed;
     }
 }
 
-void NPC::damagePlayer(const SDL_FRect *playerRect)
+bool NPC::damagePlayer()
 {
-    isColliding(playerRect);
+    return isColliding() ? true : false;
 }
 
-bool NPC::isColliding(const SDL_FRect *playerRect)
+bool NPC::isColliding()
 {
-    // if npc x coord is between players x coord + or - playerWidth
-    // and npx y coord is in same boundaries
-    // return true else false
-    std::cout << "Player coords" << std::endl;
-    std::cout << playerRect->x << std::endl;
-    std::cout << playerRect->y << std::endl;
+    if (SDL_HasIntersectionF(player->getPlayerRect(), &npcRect))
+    {
+        std::cout << "colliding" << std::endl;
+        return true;
+    }
+    return false;
+}
 
-    std::cout << "Enemy coords" << std::endl;
-    std::cout << npcRect.x << std::endl;
-    std::cout << npcRect.y << std::endl;
-    return true;
+void NPC::setPlayer(Player *player)
+{
+    this->player = player;
 }
