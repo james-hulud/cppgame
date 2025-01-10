@@ -1,7 +1,7 @@
 SRC_DIR = src
 SRC_FILES = main.cpp $(SRC_DIR)/*.cpp
 OUTPUT = play
-INCLUDE_DIRS = -I/opt/homebrew/include
+INCLUDE_DIRS = -I/opt/homebrew/include -Iinclude
 LIB_DIRS = -L/opt/homebrew/lib
 LIBS = -lSDL2
 CXXFLAGS = -std=c++11 -Wall -Wextra

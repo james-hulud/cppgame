@@ -11,11 +11,7 @@ public:
     SDL_FRect npcRect;
     SDL_Surface *spriteImage;
     SDL_Texture *sprite;
-    void trackPlayer();
-    bool damagePlayer();
-    void setPlayer(Player *player);
-    void setID(int id);
-    // void setStatus(bool isDead);
+    void setStatus(bool isDead);
     bool isDead;
 
 private:

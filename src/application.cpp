@@ -87,10 +87,8 @@ void Application::loop()
         // Follows player
         for (auto &i : mobs)
         {
-            // std::cout << "loop started fine" << std::endl;
             if (!i.second.isDead)
                 i.second.trackPlayer();
-            // std::cout << "loop ended fine" << std::endl;
 
             if (i.second.damagePlayer())
                 i.second.isDead = true;

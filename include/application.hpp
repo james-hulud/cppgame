@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
-#include "player.hpp"
+// #include "player.hpp"
 #include "npc.hpp"
+#include "mob.hpp"
 #include <list>
 #pragma once
 
@@ -20,5 +21,5 @@ private:
     SDL_Event event;
     void handleUserInput(float deltaTime);
     void draw();
-    std::unordered_map<int, NPC> mobs;
+    std::unordered_map<int, Mob> mobs;
 };

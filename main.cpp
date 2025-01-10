@@ -1,6 +1,6 @@
 #include <iostream>
 #include <SDL2/SDL.h>
-#include "./src/application.hpp"
+#include "./include/application.hpp"
 
 // GAME PLAN
 // HAVE CAMERA FOLLOW THE PLAYER AROUND WHEN MOVING
