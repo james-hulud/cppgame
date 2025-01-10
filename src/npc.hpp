@@ -14,8 +14,12 @@ public:
     void trackPlayer();
     bool damagePlayer();
     void setPlayer(Player *player);
+    void setID(int id);
+    // void setStatus(bool isDead);
+    bool isDead;
 
 private:
     bool isColliding();
     Player *player;
+    int id;
 };

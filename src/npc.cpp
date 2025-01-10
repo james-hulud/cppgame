@@ -18,6 +18,9 @@ NPC::NPC()
         std::cout << "Could not get npc image" << std::endl;
         return;
     }
+
+    // Starts alive
+    isDead = false;
 }
 
 NPC::~NPC()
@@ -50,7 +53,6 @@ bool NPC::isColliding()
 {
     if (SDL_HasIntersectionF(player->getPlayerRect(), &npcRect))
     {
-        std::cout << "colliding" << std::endl;
         return true;
     }
     return false;
@@ -59,4 +61,9 @@ bool NPC::isColliding()
 void NPC::setPlayer(Player *player)
 {
     this->player = player;
+}
+
+void NPC::setID(int id)
+{
+    this->id = id;
 }

@@ -20,5 +20,5 @@ private:
     SDL_Event event;
     void handleUserInput(float deltaTime);
     void draw();
-    std::list<NPC> mobs;
+    std::unordered_map<int, NPC> mobs;
 };

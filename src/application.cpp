@@ -38,9 +38,11 @@ Application::Application()
     for (int i = 0; i < 10; i++)
     {
         NPC enemy = NPC();
-        enemy.setPlayer(&player);
-        enemy.sprite = SDL_CreateTextureFromSurface(renderer, enemy.spriteImage);
-        mobs.emplace_back(enemy);
+        enemy.setPlayer(&player);                                                 // Set player to track
+        enemy.setID(i);                                                           // set mob ID
+        enemy.sprite = SDL_CreateTextureFromSurface(renderer, enemy.spriteImage); // create sprite
+
+        mobs[i] = enemy;
     }
 }
 
@@ -49,9 +51,9 @@ Application::~Application()
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyTexture(player.getSprite());
-    for (NPC &mob : mobs)
+    for (auto &i : mobs)
     {
-        SDL_DestroyTexture(mob.sprite);
+        SDL_DestroyTexture(i.second.sprite);
     }
 }
 
@@ -81,22 +83,18 @@ void Application::loop()
         }
 
         handleUserInput(deltaTime);
-        std::list<NPC>::iterator i = mobs.begin();
-        bool isColliding = false;
-        while (i != mobs.end())
+
+        // Follows player
+        for (auto &i : mobs)
         {
-            // Track the player
-            i->trackPlayer();
-            // if (i->damagePlayer())
-            // {
-            //     isColliding = true;
-            // }
-            i++;
+            // std::cout << "loop started fine" << std::endl;
+            if (!i.second.isDead)
+                i.second.trackPlayer();
+            // std::cout << "loop ended fine" << std::endl;
+
+            if (i.second.damagePlayer())
+                i.second.isDead = true;
         }
-
-        if (isColliding)
-            mobs.pop_back();
-
         draw();
     }
 }
@@ -128,8 +126,11 @@ void Application::draw()
     SDL_RenderCopyF(renderer, player.getSprite(), NULL, player.getPlayerRect());
 
     // Render enemies
-    for (NPC &mob : mobs)
-        SDL_RenderCopyF(renderer, mob.sprite, NULL, &mob.npcRect);
+    for (auto &i : mobs)
+    {
+        if (!i.second.isDead)
+            SDL_RenderCopyF(renderer, i.second.sprite, NULL, &i.second.npcRect);
+    }
 
     SDL_RenderPresent(renderer);
 }
