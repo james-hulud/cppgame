@@ -1,23 +1,63 @@
+#include <iostream>
 #include "basicghost.hpp"
 
 BasicGhost::BasicGhost()
 {
+    // TEMP, random coordinates for NPC spawn
+    std::random_device rd;
+    // seed
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distr(200, 800);
+
+    npcRect = (SDL_FRect){static_cast<float>(distr(gen)), static_cast<float>(distr(gen)), 200.0f, 100.0f};
+
+    spriteImage = SDL_LoadBMP("./imgs/obunga.bmp");
+
+    if (!spriteImage)
+    {
+        std::cout << "Could not get npc image" << std::endl;
+        return;
+    }
+
+    // Starts alive
+    dead = false;
 }
 
 BasicGhost::~BasicGhost()
 {
+    if (spriteImage)
+        SDL_FreeSurface(spriteImage);
+    if (sprite)
+        SDL_DestroyTexture(sprite);
+    if (player)
+        player = nullptr;
 }
 
-// void setRect(SDL_FRect npcRect) override
-// {
-// }
-
-void BasicGhost::setRect(SDL_FRect npcRect)
+void BasicGhost::trackPlayer()
 {
-    this->npcRect = npcRect;
+    // Direction vector
+    float dx = player->getPlayerRect()->x - npcRect.x;
+    float dy = player->getPlayerRect()->y - npcRect.y;
+
+    float length = std::sqrt(dx * dx + dy * dy);
+    if (length > 0.0f)
+    {
+        float speed = 0.01f;
+        npcRect.x += (dx / length) * speed;
+        npcRect.y += (dy / length) * speed;
+    }
 }
 
-SDL_FRect *BasicGhost::getRect()
+bool BasicGhost::damagePlayer()
 {
-    return &this->npcRect;
+    return isPlayerColliding() ? true : false;
+}
+
+bool BasicGhost::isPlayerColliding()
+{
+    if (SDL_HasIntersectionF(player->getPlayerRect(), &npcRect))
+    {
+        return true;
+    }
+    return false;
 }

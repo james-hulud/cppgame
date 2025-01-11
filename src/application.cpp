@@ -1,6 +1,7 @@
 #include <iostream>
 #include "application.hpp"
 #include "player.hpp"
+#include "basicghost.hpp"
 
 // Calling the constructor
 Application::Application()
@@ -37,12 +38,12 @@ Application::Application()
     // Init NPC
     for (int i = 0; i < 10; i++)
     {
-        NPC enemy = NPC();
-        enemy.setPlayer(&player);                                                 // Set player to track
-        enemy.setID(i);                                                           // set mob ID
-        enemy.sprite = SDL_CreateTextureFromSurface(renderer, enemy.spriteImage); // create sprite
+        BasicGhost *ghost = new BasicGhost();
+        ghost->setPlayer(&player);                                                     // Set player to track
+        ghost->setID(i);                                                               // set mob ID
+        ghost->setSprite(SDL_CreateTextureFromSurface(renderer, ghost->getSurface())); // create sprite
 
-        mobs[i] = enemy;
+        mobs[i] = ghost;
     }
 }
 
@@ -53,7 +54,7 @@ Application::~Application()
     SDL_DestroyTexture(player.getSprite());
     for (auto &i : mobs)
     {
-        SDL_DestroyTexture(i.second.sprite);
+        SDL_DestroyTexture(i.second->getSprite());
     }
 }
 
@@ -87,13 +88,18 @@ void Application::loop()
         // Follows player
         for (auto &i : mobs)
         {
-            if (!i.second.isDead)
-                i.second.trackPlayer();
+            i.second->trackPlayer();
 
-            if (i.second.damagePlayer())
-                i.second.isDead = true;
+            if (i.second->damagePlayer())
+            {
+                i.second->setDead(true);
+                idsToRemove.emplace_back(i.second->getID());
+            }
         }
         draw();
+        // TEMP, removes dead enemies from list
+        handleDeadEnemies();
+        std::cout << mobs.size() << std::endl;
     }
 }
 
@@ -126,9 +132,19 @@ void Application::draw()
     // Render enemies
     for (auto &i : mobs)
     {
-        if (!i.second.isDead)
-            SDL_RenderCopyF(renderer, i.second.sprite, NULL, &i.second.npcRect);
+        if (!i.second->isDead())
+            SDL_RenderCopyF(renderer, i.second->getSprite(), NULL, i.second->getRect());
     }
 
     SDL_RenderPresent(renderer);
+}
+
+void Application::handleDeadEnemies()
+{
+    for (int id : idsToRemove)
+    {
+        mobs.erase(id);
+    }
+
+    idsToRemove.clear();
 }
