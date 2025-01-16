@@ -35,7 +35,7 @@ void NPC::setID(int id)
     this->id = id;
 }
 
-int NPC::getID()
+uint32_t NPC::getID()
 {
     return this->id;
 }

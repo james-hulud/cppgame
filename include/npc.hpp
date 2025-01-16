@@ -18,7 +18,7 @@ public:
     virtual void setSprite(SDL_Texture *sprite);
     virtual SDL_Texture *getSprite();
     virtual void setID(int id);
-    virtual int getID();
+    virtual uint32_t getID();
     virtual void setDead(bool dead);
     virtual bool isDead();
     virtual void setPlayer(Player *player);
@@ -34,5 +34,5 @@ protected:
     SDL_Texture *sprite = nullptr;
     Player *player = nullptr;
     bool dead = false;
-    int id = -1;
+    uint32_t id;
 };

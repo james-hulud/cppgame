@@ -42,7 +42,7 @@ void BasicGhost::trackPlayer()
     float length = std::sqrt(dx * dx + dy * dy);
     if (length > 0.0f)
     {
-        float speed = 0.01f;
+        float speed = 0.5f;
         npcRect.x += (dx / length) * speed;
         npcRect.y += (dy / length) * speed;
     }

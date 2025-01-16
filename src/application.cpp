@@ -35,15 +35,12 @@ Application::Application()
     // Init sprite here with renderer
     player.setSprite(SDL_CreateTextureFromSurface(renderer, player.getSpriteImage()));
 
-    // Init NPC
-    for (int i = 0; i < 10; i++)
-    {
-        BasicGhost *ghost = new BasicGhost();
-        ghost->setPlayer(&player);                                                     // Set player to track
-        ghost->setID(i);                                                               // set mob ID
-        ghost->setSprite(SDL_CreateTextureFromSurface(renderer, ghost->getSurface())); // create sprite
+    npcManager.setRenderer(renderer);
+    npcManager.setPlayer(&player);
 
-        mobs[i] = ghost;
+    for (int i = 0; i < 5; i++)
+    {
+        npcManager.initNPC();
     }
 }
 
@@ -52,54 +49,39 @@ Application::~Application()
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyTexture(player.getSprite());
-    for (auto &i : mobs)
-    {
-        SDL_DestroyTexture(i.second->getSprite());
-    }
 }
 
 void Application::loop()
 {
     Uint32 lastTime = SDL_GetTicks();
 
-    bool quit = false;
-    float deltaTime = 0.0f;
+    bool running = true;
+    const int FPS = 60;
 
-    while (!quit)
+    while (running)
     {
-        Uint32 currentTime = SDL_GetTicks();
+        Uint32 start = SDL_GetTicks();
 
-        deltaTime = (currentTime - lastTime) / 1000.0f; // Bases deltaTime on the time the game has been running instead of the frame rate / loop iterations
-        lastTime = currentTime;
+        float deltaTime = (start - lastTime) / 1000.0f; // Bases deltaTime on the time the game has been running instead of the frame rate / loop iterations
+        lastTime = start;
 
         while (SDL_PollEvent(&event) != 0)
         {
-
             switch (event.type)
             {
             case SDL_QUIT:
-                quit = true;
+                running = false;
                 break;
             }
         }
 
         handleUserInput(deltaTime);
-
-        // Follows player
-        for (auto &i : mobs)
-        {
-            i.second->trackPlayer();
-
-            if (i.second->damagePlayer())
-            {
-                i.second->setDead(true);
-                idsToRemove.emplace_back(i.second->getID());
-            }
-        }
+        npcManager.executeNPCActions();
         draw();
-        // TEMP, removes dead enemies from list
-        handleDeadEnemies();
-        std::cout << mobs.size() << std::endl;
+
+        // End of frame
+        if (1000 / FPS > lastTime - start)
+            SDL_Delay(1000 / FPS - (lastTime - start));
     }
 }
 
@@ -129,22 +111,7 @@ void Application::draw()
     // Render player
     SDL_RenderCopyF(renderer, player.getSprite(), NULL, player.getPlayerRect());
 
-    // Render enemies
-    for (auto &i : mobs)
-    {
-        if (!i.second->isDead())
-            SDL_RenderCopyF(renderer, i.second->getSprite(), NULL, i.second->getRect());
-    }
-
+    // Renders all NPCs
+    npcManager.renderNPCS();
     SDL_RenderPresent(renderer);
-}
-
-void Application::handleDeadEnemies()
-{
-    for (int id : idsToRemove)
-    {
-        mobs.erase(id);
-    }
-
-    idsToRemove.clear();
 }

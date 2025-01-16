@@ -1,5 +1,5 @@
 #include <SDL2/SDL.h>
-#include "npc.hpp"
+#include "npcmanager.hpp"
 #pragma once
 
 class Application
@@ -10,6 +10,7 @@ public:
     int windowWidth;
     int windowHeight;
     SDL_Renderer *renderer;
+    NPCManager npcManager;
     void loop();
 
 private:
@@ -18,8 +19,4 @@ private:
     SDL_Event event;
     void handleUserInput(float deltaTime);
     void draw();
-    std::unordered_map<int, NPC *> mobs;
-    std::vector<int> idsToRemove;
-
-    void handleDeadEnemies();
 };
