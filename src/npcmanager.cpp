@@ -40,11 +40,23 @@ void NPCManager::handleDeadNPCS()
 {
     for (auto id : idsToRemove)
     {
+        if (mobs.find(id) == mobs.end())
+            continue;
+
         std::cout << id << " : " << mobs[id] << std::endl;
+        mobs.at(id)->~NPC();
         mobs.erase(id);
     }
 
     idsToRemove.clear();
+
+    if (!mobs.empty())
+        return;
+
+    for (int i = 0; i < 5; i++)
+    {
+        initNPC();
+    }
 }
 
 void NPCManager::setRenderer(SDL_Renderer *renderer)
