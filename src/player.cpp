@@ -1,5 +1,4 @@
 #include <iostream>
-#include "application.hpp"
 #include "player.hpp"
 #include <SDL2/SDL.h>
 

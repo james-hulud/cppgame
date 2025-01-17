@@ -1,18 +1,35 @@
 #include <iostream>
-#include "application.hpp"
+#include "game.hpp"
 #include "player.hpp"
 #include "basicghost.hpp"
 
-// Calling the constructor
-Application::Application()
+SDL_Rect Game::camera = {0, 0, 500, 500};
+
+Game::Game()
 {
+}
+
+Game::~Game()
+{
+    SDL_DestroyWindow(window);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyTexture(player.getSprite());
+}
+
+void Game::init(std::string title, int xpos, int ypos, int width, int height, bool fullscreen)
+{
+    int flags = 0;
+
+    if (fullscreen)
+        flags = SDL_WINDOW_FULLSCREEN;
+
     window = SDL_CreateWindow(
-        "Ghost Surviors",
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
-        1000,
-        800,
-        0);
+        title.c_str(),
+        xpos,
+        ypos,
+        width,
+        height,
+        flags);
 
     if (!window)
     {
@@ -21,7 +38,7 @@ Application::Application()
     }
 
     // Set the window width and height
-    SDL_GetWindowSize(window, &windowWidth, &windowHeight);
+    SDL_GetWindowSize(window, &WINDOW_WIDTH, &WINDOW_HEIGHT);
 
     // Init renderer
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
@@ -34,7 +51,6 @@ Application::Application()
 
     // Init sprite here with renderer
     player.setSprite(SDL_CreateTextureFromSurface(renderer, player.getSpriteImage()));
-
     npcManager.setRenderer(renderer);
     npcManager.setPlayer(&player);
 
@@ -42,50 +58,37 @@ Application::Application()
     {
         npcManager.initNPC();
     }
+
+    isRunning = true;
 }
 
-Application::~Application()
-{
-    SDL_DestroyWindow(window);
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyTexture(player.getSprite());
-}
-
-void Application::loop()
+void Game::loop()
 {
     Uint32 lastTime = SDL_GetTicks();
 
-    bool running = true;
     const int FPS = 60;
+    float deltaTime;
 
-    while (running)
+    while (isRunning)
     {
+        // Start of frame
         Uint32 start = SDL_GetTicks();
-
-        float deltaTime = (start - lastTime) / 1000.0f; // Bases deltaTime on the time the game has been running instead of the frame rate / loop iterations
+        deltaTime = (start - lastTime) / 1000.0f; // Bases deltaTime on the time the game has been running instead of the frame rate / loop iterations
         lastTime = start;
 
-        while (SDL_PollEvent(&event) != 0)
-        {
-            switch (event.type)
-            {
-            case SDL_QUIT:
-                running = false;
-                break;
-            }
-        }
-
-        handleUserInput(deltaTime);
-        npcManager.executeNPCActions();
-        draw();
+        handleEvents(deltaTime);
+        update();
+        render();
 
         // End of frame
         if (1000 / FPS > lastTime - start)
             SDL_Delay(1000 / FPS - (lastTime - start));
     }
+
+    std::cout << "Game terminated successfully." << std::endl;
 }
 
-void Application::handleUserInput(float deltaTime)
+void Game::handleUserInput(float deltaTime)
 {
     // keyState works with continous presses
     const Uint8 *keyState = SDL_GetKeyboardState(NULL);
@@ -104,7 +107,7 @@ void Application::handleUserInput(float deltaTime)
     }
 }
 
-void Application::draw()
+void Game::render()
 {
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -114,4 +117,23 @@ void Application::draw()
     // Renders all NPCs
     npcManager.renderNPCS();
     SDL_RenderPresent(renderer);
+}
+
+void Game::handleEvents(float deltaTime)
+{
+    while (SDL_PollEvent(&event) != 0)
+    {
+        switch (event.type)
+        {
+        case SDL_QUIT:
+            isRunning = false;
+            break;
+        }
+    }
+    handleUserInput(deltaTime);
+}
+
+void Game::update()
+{
+    npcManager.executeNPCActions();
 }

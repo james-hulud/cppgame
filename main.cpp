@@ -1,6 +1,6 @@
 #include <iostream>
 #include <SDL2/SDL.h>
-#include "./include/application.hpp"
+#include "./include/game.hpp"
 
 // GAME PLAN
 // HAVE CAMERA FOLLOW THE PLAYER AROUND WHEN MOVING
@@ -16,10 +16,11 @@ int main()
         return -1;
     }
 
-    Application app;
+    Game game;
+    game.init("Ghost survivors", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1000, 800, false);
 
     // Main game loop
-    app.loop();
+    game.loop();
 
     SDL_Quit();
     return 0;
