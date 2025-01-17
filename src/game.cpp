@@ -62,32 +62,6 @@ void Game::init(std::string title, int xpos, int ypos, int width, int height, bo
     isRunning = true;
 }
 
-void Game::loop()
-{
-    Uint32 lastTime = SDL_GetTicks();
-
-    const int FPS = 60;
-    float deltaTime;
-
-    while (isRunning)
-    {
-        // Start of frame
-        Uint32 start = SDL_GetTicks();
-        deltaTime = (start - lastTime) / 1000.0f; // Bases deltaTime on the time the game has been running instead of the frame rate / loop iterations
-        lastTime = start;
-
-        handleEvents(deltaTime);
-        update();
-        render();
-
-        // End of frame
-        if (1000 / FPS > lastTime - start)
-            SDL_Delay(1000 / FPS - (lastTime - start));
-    }
-
-    std::cout << "Game terminated successfully." << std::endl;
-}
-
 void Game::handleUserInput(float deltaTime)
 {
     // keyState works with continous presses

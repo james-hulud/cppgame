@@ -2,26 +2,36 @@
 #include <SDL2/SDL.h>
 #include "./include/game.hpp"
 
-// GAME PLAN
-// HAVE CAMERA FOLLOW THE PLAYER AROUND WHEN MOVING
-// CREATE A VIEWPORT FOR THE PLAYER, HAVE THE VIEWPORT FOLLOW THE PLAYER SPRITE AROUND
-// HAVE THE WINDOW FOLLOW THE PLAYER SPRITE AROUND AS THEY MOVE
+Game *game = nullptr;
 
 int main()
 {
-    std::cout << "Output here" << std::endl;
-
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)
-    {
+    if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
         return -1;
+
+    game = new Game();
+    game->init("Ghost survivors", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1000, 800, false);
+
+    Uint32 lastTime = SDL_GetTicks();
+    const int FPS = 60; // Cap at 60fps
+    float deltaTime;
+
+    while (game->isRunning)
+    {
+        Uint32 start = SDL_GetTicks(); // Start of frame
+        deltaTime = (start - lastTime) / 1000.0f;
+        lastTime = start;
+
+        game->handleEvents(deltaTime);
+        game->update();
+        game->render();
+
+        if (1000 / FPS > lastTime - start) // End of frame
+            SDL_Delay(1000 / FPS - (lastTime - start));
     }
 
-    Game game;
-    game.init("Ghost survivors", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1000, 800, false);
-
-    // Main game loop
-    game.loop();
-
+    delete game;
     SDL_Quit();
+    std::cout << "Game closed." << std::endl;
     return 0;
 }

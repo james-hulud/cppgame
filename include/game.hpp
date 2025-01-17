@@ -8,16 +8,16 @@ public:
     Game();
     ~Game();
 
-    int WINDOW_WIDTH;
-    int WINDOW_HEIGHT;
+    bool isRunning;
 
-    void loop();
+    void init(std::string title, int xpos, int ypos, int width, int height, bool fullscreen);
+    void handleEvents(float deltaTime);
     void update();
     void render();
-    void init(std::string title, int xpos, int ypos, int width, int height, bool fullscreen);
 
 private:
-    bool isRunning;
+    int WINDOW_WIDTH;
+    int WINDOW_HEIGHT;
     Player player;
     SDL_Window *window;
     SDL_Event event;
@@ -25,5 +25,4 @@ private:
     NPCManager npcManager;
     static SDL_Rect camera;
     void handleUserInput(float deltaTime);
-    void handleEvents(float deltaTime);
 };
