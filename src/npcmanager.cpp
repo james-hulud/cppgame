@@ -29,19 +29,18 @@ void NPCManager::initNPC()
     }
 
     BasicGhost *ghost = new BasicGhost();
-    uintptr_t id = reinterpret_cast<uintptr_t>(ghost);
     ghost->setPlayer(player);                                                      // Set player to track
-    ghost->setID(id);                                                              // set mob ID
+    ghost->setID(reinterpret_cast<uintptr_t>(ghost));                              // set NPC's unique ID
     ghost->setSprite(SDL_CreateTextureFromSurface(renderer, ghost->getSurface())); // create sprite
-    mobs[id] = ghost;
+    std::cout << ghost << std::endl;
+    mobs[ghost->getID()] = ghost;
 }
 
 void NPCManager::handleDeadNPCS()
 {
     for (auto id : idsToRemove)
     {
-        std::cout << id << std::endl;
-        std::cout << mobs[id] << std::endl;
+        std::cout << id << " : " << mobs[id] << std::endl;
         mobs.erase(id);
     }
 
@@ -79,8 +78,6 @@ void NPCManager::executeNPCActions()
 
     // Remove dead enemies from map
     handleDeadNPCS();
-
-    std::cout << mobs.size() << std::endl;
 }
 
 void NPCManager::setPlayer(Player *player)
