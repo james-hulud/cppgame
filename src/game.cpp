@@ -13,7 +13,7 @@ Game::~Game()
 {
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
-    SDL_DestroyTexture(player.getSprite());
+    SDL_DestroyTexture(player->getSprite());
 }
 
 void Game::init(std::string title, int xpos, int ypos, int width, int height, bool fullscreen)
@@ -49,10 +49,9 @@ void Game::init(std::string title, int xpos, int ypos, int width, int height, bo
         return;
     }
 
-    // Init sprite here with renderer
-    player.setSprite(SDL_CreateTextureFromSurface(renderer, player.getSpriteImage()));
+    player = new Player("/Users/james/repos/cppgame/imgs/john-snow.svg", renderer);
     npcManager.setRenderer(renderer);
-    npcManager.setPlayer(&player);
+    npcManager.setPlayer(player);
 
     for (int i = 0; i < 5; i++)
     {
@@ -75,7 +74,7 @@ void Game::handleUserInput(float deltaTime)
     {
         if (keyState[movementKeys[i]])
         {
-            player.move(deltaTime);
+            player->move(deltaTime);
             break;
         }
     }
@@ -86,7 +85,7 @@ void Game::render()
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     // Render player
-    SDL_RenderCopyF(renderer, player.getSprite(), NULL, player.getPlayerRect());
+    SDL_RenderCopyF(renderer, player->getSprite(), NULL, player->getPlayerRect());
 
     // Renders all NPCs
     npcManager.renderNPCS();

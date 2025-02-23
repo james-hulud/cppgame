@@ -1,23 +1,29 @@
 #include <iostream>
 #include "player.hpp"
 #include <SDL2/SDL.h>
+#include "textureloader.hpp"
 
 Player::Player()
 {
     playerRect = (SDL_FRect){0.0f, 0.0f, 100.0f, 100.0f};
+}
 
-    setSpriteImage(SDL_LoadBMP("./imgs/player.bmp"));
+Player::Player(std::string textureImage, SDL_Renderer *ren)
+{
+    playerRect = (SDL_FRect){0.0f, 0.0f, 100.0f, 100.0f};
 
-    if (!spriteImage)
+    texture = TextureLoader::loadTexture(textureImage, ren);
+
+    if (!texture)
     {
-        std::cout << "Could not get sprite image: " << SDL_GetError() << std::endl;
+        std::cout << "Could not get load texture: " << SDL_GetError() << std::endl;
         return;
     }
 }
 
 Player::~Player()
 {
-    SDL_FreeSurface(spriteImage);
+    SDL_DestroyTexture(texture);
 }
 
 void Player::move(float deltaTime)
@@ -40,22 +46,7 @@ void Player::move(float deltaTime)
 
 SDL_Texture *Player::getSprite()
 {
-    return sprite;
-}
-
-void Player::setSprite(SDL_Texture *sprite)
-{
-    this->sprite = sprite;
-}
-
-SDL_Surface *Player::getSpriteImage()
-{
-    return spriteImage;
-}
-
-void Player::setSpriteImage(SDL_Surface *spriteImage)
-{
-    this->spriteImage = spriteImage;
+    return texture;
 }
 
 SDL_FRect *Player::getPlayerRect()

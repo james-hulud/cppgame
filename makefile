@@ -3,7 +3,7 @@ SRC_FILES = main.cpp $(SRC_DIR)/*.cpp
 OUTPUT = play
 INCLUDE_DIRS = -I/opt/homebrew/include -Iinclude
 LIB_DIRS = -L/opt/homebrew/lib
-LIBS = -lSDL2
+LIBS = -lSDL2 -lSDL2_image
 CXXFLAGS = -std=c++11 -Wall -Wextra
 
 main:

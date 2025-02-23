@@ -18,7 +18,7 @@ public:
 private:
     int WINDOW_WIDTH;
     int WINDOW_HEIGHT;
-    Player player;
+    Player *player;
     SDL_Window *window;
     SDL_Event event;
     SDL_Renderer *renderer;
