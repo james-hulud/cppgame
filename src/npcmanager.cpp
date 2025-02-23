@@ -92,7 +92,7 @@ void NPCManager::executeNPCActions()
     handleDeadNPCS();
 }
 
-void NPCManager::setPlayer(Player *player)
+void NPCManager::setPlayer(GameObject *player)
 {
     this->player = player;
 }

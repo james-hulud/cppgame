@@ -1,6 +1,6 @@
 #include <SDL2/SDL.h>
 #include <random>
-#include "player.hpp"
+#include "gameobject.hpp"
 #pragma once
 
 // Abstract class all NPCs will implement, setters and getters work the same for all NPCs
@@ -21,7 +21,7 @@ public:
     virtual uint32_t getID();
     virtual void setDead(bool dead);
     virtual bool isDead();
-    virtual void setPlayer(Player *player);
+    virtual void setPlayer(GameObject *player);
     virtual bool isPlayerColliding() = 0;
 
     // Implement these:
@@ -32,7 +32,7 @@ protected:
     SDL_FRect npcRect;
     SDL_Surface *spriteImage = nullptr;
     SDL_Texture *sprite = nullptr;
-    Player *player = nullptr;
+    GameObject *player = nullptr;
     bool dead = false;
     uint32_t id;
 };

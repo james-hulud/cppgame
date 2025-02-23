@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include "npc.hpp"
+#pragma once
 
 // class for the beginner enemy BasicGhost
 // all enemies will implement the NPC abstract class

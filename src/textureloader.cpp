@@ -8,6 +8,7 @@ SDL_Texture *TextureLoader::loadTexture(std::string texturePath, SDL_Renderer *r
     if (!loadedSurface)
     {
         std::cout << "Could not load texture surface: " << SDL_GetError() << std::endl;
+        return NULL;
     }
 
     texture = SDL_CreateTextureFromSurface(ren, loadedSurface);
@@ -15,12 +16,12 @@ SDL_Texture *TextureLoader::loadTexture(std::string texturePath, SDL_Renderer *r
     if (!texture)
     {
         std::cout << "Could not create texture: " << SDL_GetError() << std::endl;
+        return NULL;
     }
 
     SDL_FreeSurface(loadedSurface);
 
     std::cout << "texture here" << std::endl;
-    std::cout << texture << std::endl;
 
     return texture;
 }

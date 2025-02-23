@@ -1,7 +1,4 @@
-#include <iostream>
 #include "game.hpp"
-#include "player.hpp"
-#include "basicghost.hpp"
 
 SDL_Rect Game::camera = {0, 0, 500, 500};
 
@@ -13,7 +10,7 @@ Game::~Game()
 {
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
-    SDL_DestroyTexture(player->getSprite());
+    // SDL_DestroyTexture(player->getSprite());
 }
 
 void Game::init(std::string title, int xpos, int ypos, int width, int height, bool fullscreen)
@@ -49,7 +46,7 @@ void Game::init(std::string title, int xpos, int ypos, int width, int height, bo
         return;
     }
 
-    player = new Player("/Users/james/repos/cppgame/imgs/john-snow.svg", renderer);
+    player = new GameObject("/Users/james/repos/cppgame/imgs/john-snow.svg", renderer);
     npcManager.setRenderer(renderer);
     npcManager.setPlayer(player);
 
@@ -84,8 +81,7 @@ void Game::render()
 {
     SDL_RenderClear(renderer);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    // Render player
-    SDL_RenderCopyF(renderer, player->getSprite(), NULL, player->getPlayerRect());
+    player->render();
 
     // Renders all NPCs
     npcManager.renderNPCS();
@@ -108,5 +104,6 @@ void Game::handleEvents(float deltaTime)
 
 void Game::update()
 {
+    player->update();
     npcManager.executeNPCActions();
 }

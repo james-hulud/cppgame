@@ -1,6 +1,8 @@
 #include <iostream>
 #include <SDL2/SDL.h>
+#include "gameobject.hpp"
 #include "npc.hpp"
+#pragma once
 
 /*
 Responsible for managing all NPCs,
@@ -16,12 +18,12 @@ public:
     void setRenderer(SDL_Renderer *renderer);
     void renderNPCS();
     void executeNPCActions();
-    void setPlayer(Player *player);
+    void setPlayer(GameObject *player);
 
 private:
     std::unordered_map<uintptr_t, NPC *> mobs;
     std::vector<uintptr_t> idsToRemove;
-    Player *player;
+    GameObject *player;
     SDL_Renderer *renderer = NULL;
     void handleDeadNPCS();
 };

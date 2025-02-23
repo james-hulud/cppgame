@@ -50,7 +50,7 @@ bool NPC::isDead()
     return this->dead;
 }
 
-void NPC::setPlayer(Player *player)
+void NPC::setPlayer(GameObject *player)
 {
     this->player = player;
 }

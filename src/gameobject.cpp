@@ -1,4 +1,3 @@
-#include <iostream>
 #include "gameobject.hpp"
 #include "textureloader.hpp"
 
@@ -14,8 +13,8 @@ void GameObject::update()
     xpos = 0;
     ypos = 0;
 
-    srcRect.h = 32;
-    srcRect.w = 32;
+    srcRect.h = 100;
+    srcRect.w = 100;
     srcRect.x = 0;
     srcRect.y = 0;
 
@@ -28,6 +27,28 @@ void GameObject::update()
 
 void GameObject::render()
 {
-    // render here
-    SDL_RenderCopyF(renderer, objTexture, NULL, &destRect); // in og code NULL is obj's srcRect
+    SDL_RenderCopyF(renderer, objTexture, NULL, &destRect); // temporary null
+}
+
+void GameObject::move(float deltaTime)
+{
+    float velocity = 100.0;
+    const Uint8 *keyState = SDL_GetKeyboardState(NULL);
+
+    if (keyState[SDL_SCANCODE_UP] || keyState[SDL_SCANCODE_W])
+        destRect.y -= velocity * deltaTime;
+
+    if (keyState[SDL_SCANCODE_LEFT] || keyState[SDL_SCANCODE_A])
+        destRect.x -= velocity * deltaTime;
+
+    if (keyState[SDL_SCANCODE_DOWN] || keyState[SDL_SCANCODE_S])
+        destRect.y += velocity * deltaTime;
+
+    if (keyState[SDL_SCANCODE_RIGHT] || keyState[SDL_SCANCODE_D])
+        destRect.x += velocity * deltaTime;
+}
+
+SDL_FRect *GameObject::getRect()
+{
+    return &this->destRect;
 }

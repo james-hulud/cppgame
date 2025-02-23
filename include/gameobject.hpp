@@ -1,5 +1,6 @@
+#include <SDL2/SDL.h>
 #include <iostream>
-#include "game.hpp"
+#pragma once
 
 class GameObject
 {
@@ -9,12 +10,15 @@ public:
 
     void update();
     void render();
+    void move(float deltaTime);
+    SDL_FRect *getRect();
 
 private:
     int xpos;
     int ypos;
 
     SDL_Texture *objTexture;
-    SDL_FRect srcRect, destRect;
+    SDL_Rect srcRect;
+    SDL_FRect destRect;
     SDL_Renderer *renderer;
 };

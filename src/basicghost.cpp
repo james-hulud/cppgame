@@ -1,4 +1,3 @@
-#include <iostream>
 #include "basicghost.hpp"
 
 BasicGhost::BasicGhost()
@@ -36,8 +35,8 @@ BasicGhost::~BasicGhost()
 void BasicGhost::trackPlayer()
 {
     // Direction vector
-    float dx = player->getPlayerRect()->x - npcRect.x;
-    float dy = player->getPlayerRect()->y - npcRect.y;
+    float dx = player->getRect()->x - npcRect.x;
+    float dy = player->getRect()->y - npcRect.y;
 
     float length = std::sqrt(dx * dx + dy * dy);
     if (length > 0.0f)
@@ -55,7 +54,7 @@ bool BasicGhost::damagePlayer()
 
 bool BasicGhost::isPlayerColliding()
 {
-    if (SDL_HasIntersectionF(player->getPlayerRect(), &npcRect))
+    if (SDL_HasIntersectionF(player->getRect(), &npcRect))
     {
         return true;
     }
