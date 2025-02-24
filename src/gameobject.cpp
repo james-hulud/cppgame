@@ -34,16 +34,16 @@ void GameObject::move(float deltaTime)
     const Uint8 *keyState = SDL_GetKeyboardState(NULL);
 
     if (keyState[SDL_SCANCODE_UP] || keyState[SDL_SCANCODE_W])
-        destRect.y -= velocity * deltaTime;
+        ypos -= velocity * deltaTime;
 
     if (keyState[SDL_SCANCODE_LEFT] || keyState[SDL_SCANCODE_A])
-        destRect.x -= velocity * deltaTime;
+        xpos -= velocity * deltaTime;
 
     if (keyState[SDL_SCANCODE_DOWN] || keyState[SDL_SCANCODE_S])
-        destRect.y += velocity * deltaTime;
+        ypos += velocity * deltaTime;
 
     if (keyState[SDL_SCANCODE_RIGHT] || keyState[SDL_SCANCODE_D])
-        destRect.x += velocity * deltaTime;
+        xpos += velocity * deltaTime;
 }
 
 SDL_FRect *GameObject::getRect()

@@ -70,6 +70,7 @@ void Game::handleUserInput(float deltaTime)
     {
         if (keyState[movementKeys[i]])
         {
+            std::cout << "player moving" << std::endl;
             player->move(deltaTime);
             break;
         }
