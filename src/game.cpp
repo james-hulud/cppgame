@@ -1,7 +1,9 @@
 #include "game.hpp"
+#include "map.hpp"
 
 SDL_Rect Game::camera = {0, 0, 500, 500};
 SDL_Renderer *Game::renderer = nullptr;
+Map *map;
 
 Game::Game()
 {
@@ -55,6 +57,8 @@ void Game::init(std::string title, int xpos, int ypos, int width, int height, bo
         npcManager.initNPC();
     }
 
+    map = new Map();
+
     isRunning = true;
 }
 
@@ -71,7 +75,6 @@ void Game::handleUserInput(float deltaTime)
     {
         if (keyState[movementKeys[i]])
         {
-            std::cout << "player moving" << std::endl;
             player->move(deltaTime);
             break;
         }
@@ -81,7 +84,8 @@ void Game::handleUserInput(float deltaTime)
 void Game::render()
 {
     SDL_RenderClear(renderer);
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    // SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    map->drawMap();
     player->render();
 
     // Renders all NPCs
