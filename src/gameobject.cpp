@@ -1,18 +1,16 @@
 #include "gameobject.hpp"
-#include "textureloader.hpp"
+#include "texturemanager.hpp"
 
-GameObject::GameObject(std::string textureSheet, SDL_Renderer *ren)
+GameObject::GameObject(std::string textureSheet, SDL_Renderer *ren, int x, int y)
 {
     renderer = ren;
-    objTexture = TextureLoader::loadTexture(textureSheet, ren);
+    objTexture = TextureManager::loadTexture(textureSheet, ren);
+    xpos = x;
+    ypos = y;
 }
 
 void GameObject::update()
 {
-    // update here
-    xpos = 0;
-    ypos = 0;
-
     srcRect.h = 100;
     srcRect.w = 100;
     srcRect.x = 0;

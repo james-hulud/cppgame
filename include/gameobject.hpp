@@ -5,7 +5,7 @@
 class GameObject
 {
 public:
-    GameObject(std::string textureSheet, SDL_Renderer *renderer);
+    GameObject(std::string textureSheet, SDL_Renderer *renderer, int xpos, int ypos);
     ~GameObject();
 
     void update();

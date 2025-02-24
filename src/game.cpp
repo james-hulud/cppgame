@@ -10,7 +10,6 @@ Game::~Game()
 {
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
-    // SDL_DestroyTexture(player->getSprite());
 }
 
 void Game::init(std::string title, int xpos, int ypos, int width, int height, bool fullscreen)
@@ -46,7 +45,7 @@ void Game::init(std::string title, int xpos, int ypos, int width, int height, bo
         return;
     }
 
-    player = new GameObject("/Users/james/repos/cppgame/imgs/john-snow.svg", renderer);
+    player = new GameObject("/Users/james/repos/cppgame/imgs/john-snow.svg", renderer, 0, 0);
     npcManager.setRenderer(renderer);
     npcManager.setPlayer(player);
 
