@@ -1,6 +1,7 @@
 #include "game.hpp"
 
 SDL_Rect Game::camera = {0, 0, 500, 500};
+SDL_Renderer *Game::renderer = nullptr;
 
 Game::Game()
 {
@@ -45,7 +46,7 @@ void Game::init(std::string title, int xpos, int ypos, int width, int height, bo
         return;
     }
 
-    player = new GameObject("/Users/james/repos/cppgame/imgs/john-snow.svg", renderer, 0, 0);
+    player = new GameObject("/Users/james/repos/cppgame/imgs/john-snow.svg", 0, 0);
     npcManager.setRenderer(renderer);
     npcManager.setPlayer(player);
 

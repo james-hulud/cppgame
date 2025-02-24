@@ -10,7 +10,7 @@ int main()
         return -1;
 
     game = new Game();
-    game->init("Ghost survivors", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1000, 800, false);
+    game->init("Ghost survivors", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1000, 640, false);
 
     Uint32 lastTime = SDL_GetTicks();
     const int FPS = 60; // Cap at 60fps

@@ -6,5 +6,5 @@
 class TextureManager
 {
 public:
-    static SDL_Texture *loadTexture(std::string texture, SDL_Renderer *renderer);
+    static SDL_Texture *loadTexture(std::string texture);
 };

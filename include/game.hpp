@@ -17,13 +17,14 @@ public:
     void update();
     void render();
 
+    static SDL_Renderer *renderer;
+
 private:
     int WINDOW_WIDTH;
     int WINDOW_HEIGHT;
     GameObject *player;
     SDL_Window *window;
     SDL_Event event;
-    SDL_Renderer *renderer;
     NPCManager npcManager;
     static SDL_Rect camera;
     void handleUserInput(float deltaTime);
