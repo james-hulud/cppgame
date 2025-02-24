@@ -1,6 +1,6 @@
 #include <iostream>
 #include <SDL2/SDL.h>
-#include "./include/game.hpp"
+#include <game.hpp>
 
 Game *game = nullptr;
 
